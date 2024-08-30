@@ -1,97 +1,44 @@
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/subsquid/squid-evm-template)
+# ⚡ Squid Torch: AI-Driven Token Liquidity Model for Secure Grants⚡
 
-# Minimal EVM squid
+## 🔍 Project Overview
+In today’s global landscape, stablecoins and cryptocurrencies have become prominent methods for providing grants and payments to developers, particularly in the context of international collaboration. This approach simplifies transactions, bypassing the complexities and bureaucratic hurdles associated with traditional financial infrastructures, such as banks.
 
-This is a starter template of a squid indexer for EVM networks (Ethereum, Polygon, BSC, etc.). See [Squid SDK docs](https://docs.subsquid.io/) for a complete reference.
+However, while this method offers efficiency, it also introduces the challenge of ensuring the stability of the chosen cryptocurrency, especially for developers who intend to hold these tokens over the long term. Predicting the future price of a token can be an uncertain and often futile endeavor. Instead, focusing on the liquidity of a token as a measure of its stability presents a more reliable approach. By prioritizing liquidity, developers can make more informed decisions about which tokens or coins they should accept as payments or grants, ensuring greater financial security in the volatile world of cryptocurrency.
 
-To extract EVM logs and transactions by a topic or a contract address, use [`.addLog()`](https://docs.subsquid.io/evm-indexing/configuration/evm-logs/), [`.addTransaction()`](https://docs.subsquid.io/evm-indexing/configuration/transactions/), [`.addTrace()`](https://docs.subsquid.io/evm-indexing/configuration/traces/) or [`.addStateDiff()`](https://docs.subsquid.io/evm-indexing/configuration/state-diffs/) methods of the `EvmBatchProcessor` instance defined in `src/processor.ts`. Select data fields with [`.setFields()`](https://docs.subsquid.io/evm-indexing/configuration/data-selection/).
+### 📊 Forecasting Pool Liquidity of Different Tokens and Token Pairs for Grant Selection
+As the DeFi space continues to evolve, liquidity has emerged as a key metric for evaluating the long-term stability of cryptocurrencies. This project emphasizes the importance of forecasting pool liquidity, particularly over token price, to guide developers and other stakeholders in selecting the most stable tokens for grants and payments. Liquidity is not just an indicator of market health but also a critical factor in executing large transactions and securing long-term investments.
 
-The requested data is transformed in batches by a single handler provided to the `processor.run()` method. 
+### 💡 Liquidity as a Stability Indicator
+- _Market Confidence_: High liquidity reflects strong market confidence, suggesting that a token is widely accepted and actively traded. This makes it a more reliable choice for developers and other market participants.
 
-For a full list of supported networks and config options,
-check the [`EvmBatchProcessor` overview](https://docs.subsquid.io/evm-indexing/evm-processor/) and the [setup section](https://docs.subsquid.io/evm-indexing/configuration/).
+- _Ease of Transaction_: Liquidity ensures that large transactions can occur without significantly impacting the token's price, which is crucial for developers and other users who may need to move substantial amounts of the token efficiently.
 
-For a step-by-step migration guide from TheGraph, see [the dedicated docs page](https://docs.subsquid.io/migrate/migrate-subgraph/).
+### 💬 Liquidity vs. Price Volatility
+- _Stability Over Volatility_: While token prices can fluctuate due to speculation or market shocks, liquidity tends to be more stable. This stability is often underpinned by long-term holders and well-established liquidity pools, indicating the overall strength and durability of the token’s market.
 
-Dependencies: Node.js v16 or newer, Git, Docker.
+- _Buffer Against Volatility_: High liquidity serves as a cushion against market volatility, allowing for the absorption of sales without a dramatic drop in token price. This creates a safer environment for managing assets and reduces the risk of severe price fluctuations.
 
-## Quickstart
+### 🧪 Planning and Strategy
+- _Long-Term Planning_: By forecasting liquidity, developers and investors can plan for the long term. Tokens with consistently high liquidity are more likely to remain viable and tradable, supporting ongoing operations and development without the added risk of illiquidity.
 
-```bash
-# 0. Install @subsquid/cli a.k.a. the sqd command globally
-npm i -g @subsquid/cli
+- _Risk Management_: Focusing on liquidity forecasting helps developers manage the risks associated with illiquid tokens. This is crucial in avoiding tokens that may suffer liquidity shortages, forcing sellers to accept lower prices in the future.
 
-# 1. Retrieve the template
-sqd init my_squid_name -t evm
-cd my_squid_name
+### 🔗 Enhancing Models with Squid SDK
+To enrich our modeling efforts, we leverage the data provided by Squid's SDK. This tool offers transactional insights and real-time data on token liquidity, enabling more accurate predictions and enhancing our ability to forecast market conditions. By integrating Squid's SDK, we aim to significantly improve the performance of our models, allowing for better decision-making regarding token selection and grant distribution.
 
-# 2. Install dependencies
-npm ci
+### 📌 Impact on Developers and the DeFi Ecosystem
+In the advent of DeFi, it has become increasingly common for software developers to be compensated in cryptocurrencies. In this context, liquidity becomes a crucial consideration for developers when choosing which tokens to accept as payment. Ensuring that developers are paid in stable and liquid tokens can protect their earnings from sharp price drops and liquidity risks.
 
-# 3. Start a Postgres database container and detach
-sqd up
+Beyond software developers, many other transactions within the DeFi ecosystem rely on liquid markets. By improving our ability to model liquidity across various tokens, we contribute to creating a more stable and sustainable economy within the cryptocurrency and DeFi space. This project is a critical step toward guiding participants in the DeFi ecosystem toward informed and secure financial decisions.
 
-# 4. Build the squid
-sqd build
-
-# 5. Start both the squid processor and the GraphQL server
-sqd run .
-```
-A GraphiQL playground will be available at [localhost:4350/graphql](http://localhost:4350/graphql).
-
-You can also start squid services one by one:
-```bash
-sqd process
-sqd serve
-```
-
-## Dev flow
-
-### 1. Define database schema
-
-Start development by defining the schema of the target database via `schema.graphql`.
-Schema definition consists of regular graphql type declarations annotated with custom directives.
-Full description of `schema.graphql` dialect is available [here](https://docs.subsquid.io/store/postgres/schema-file/).
-
-### 2. Generate TypeORM classes
-
-Mapping developers use TypeORM [EntityManager](https://typeorm.io/#/working-with-entity-manager)
-to interact with target database during data processing. All necessary entity classes are
-generated by the squid framework from `schema.graphql`. This is done by running `sqd codegen`
-command.
-
-### 3. Generate database migrations
-
-All database changes are applied through migration files located at `db/migrations`.
-`squid-typeorm-migration(1)` tool provides several commands to drive the process.
-
-```bash
-## drop create the database
-sqd down
-sqd up
-
-## replace any old schemas with a new one made from the entities
-sqd migration:generate
-```
-See [docs on database migrations](https://docs.subsquid.io/store/postgres/db-migrations/) for more details.
-
-### 4. Import ABI contract and generate interfaces to decode events
-
-It is necessary to import the respective ABI definition to decode EVM logs. One way to generate a type-safe facade class to decode EVM logs is by placing the relevant JSON ABIs to `./abi`, then using `squid-evm-typegen(1)` via an `sqd` script:
-
-```bash
-sqd typegen
-```
-
-See more details on the [`squid-evm-typegen` doc page](https://docs.subsquid.io/evm-indexing/squid-evm-typegen).
-
-## Project conventions
-
-Squid tools assume a certain [project layout](https://docs.subsquid.io/basics/squid-structure):
-
-* All compiled js files must reside in `lib` and all TypeScript sources in `src`.
-The layout of `lib` must reflect `src`.
-* All TypeORM classes must be exported by `src/model/index.ts` (`lib/model` module).
-* Database schema must be defined in `schema.graphql`.
-* Database migrations must reside in `db/migrations` and must be plain js files.
-* `sqd(1)` and `squid-*(1)` executables consult `.env` file for environment variables.
+## 🔧 Tech Stack Used:
+1) **GizaTech's Dataset**:
+    - _balancer-daily-pool-liquidity_
+    - _balancer-daily-trade-volume_
+2) **Squid SDK**: Enables the collection of real-time blockchain transaction data for specific and selected tokens:
+    - _DAI_
+    - _MATIC_
+    - _USDT_
+    - _WBTC_
+    - _WETH_
+3) **Pytorch**: Used to train a model for predicting the Pool Liquidity (in Logs) in USD for each token pairs
